@@ -1,0 +1,22 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+
+
+haltLoop$:
+	b	haltLoop$
+
+.section .data  
+

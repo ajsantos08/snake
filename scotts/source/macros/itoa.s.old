@@ -1,0 +1,69 @@
+
+
+//Paramiters: A * Buffer , an intiger.
+
+//Returns:	* Bufffer,	intiger (length of string)
+
+//TODO: Buffer overflow checking.
+
+
+buffer .req r0
+rem	.req r3
+quo	.req r1
+int	.req r1
+cnt	.req r5
+addr .req r4
+
+.macro	intdivwrap	numer
+	push	{buffer}			//Saves buffer
+	mov		r0,	\numer
+	mov		r1,	#10
+	bl		intdiv				//Divide r0(int) by 10 
+	mov		rem,	r1			//Remainder  	
+	mov		quo,	r0			//Quotent
+	pop		{buffer}			//Restores buffer
+.endm	
+
+itoa:	
+	push 	{r2-r12,lr}			//Saves extra values
+	mov		cnt,	#0			//Initalizes counter
+	mov		addr,	#0
+
+
+itoa_loop:
+	intdivwrap	int			//Does Division by 10 returning rem and quo (replacing int)
+	cmp		quo,	#0			//Check if quotent is zero
+	push	{rem}				//Stores the remainder
+	add		cnt, #1				//Increments a counter
+	bne itoa_loop				//If quotent is zero, fall through.
+								// cnt = int from above, next iteration continues where
+								// left off.
+
+itoa_ret:
+	cmp		cnt, #0				//Compair the counter
+	pop		{int}				//Pulls the remainder
+	add		int,	#'0'		//Converts it to a char
+	strb	int,	[buffer , r4]	//Stores the int to the correct position in 
+									//the buffer. 
+									//Done this way so that the buffer register 
+									//isn't changed (for return).
+			beq		itoa_end			//Skip
+	add		addr,#4				//Increments the buffer.
+	sub		r5, #1					//Decrements counter
+	bne		itoa_ret	
+
+itoa_end:
+	lsr		addr,	#2				//Turns the buffer value into the a length (div by 4)
+	mov		r1, addr				//Returns a count on r1.
+								//Buffer will still be on r0.
+	pop	 	{r2-r12,lr}			//Returns the extra values
+	bx		lr
+
+.align 4
+
+.unreq	buffer
+.unreq	rem
+.unreq	quo
+.unreq	int
+.unreq	cnt
+.unreq	addr

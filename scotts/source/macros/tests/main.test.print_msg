@@ -1,0 +1,46 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+
+	ldr		r0,	=a
+	bl	print_msg	
+
+	ldr		r0,	=b
+	bl	print_msg
+
+	ldr		r0,	=c
+	bl	print_msg
+
+	ldr		r0,	=d
+	bl	print_msg
+
+halt:
+haltLoop$:
+	b	haltLoop$
+
+.section .data  
+
+
+a:	.asciz		"HELLO WORLD! \n \r"
+
+b:	.asciz		"WHAT THERE IS A \0 HERE"
+
+c:	.asciz		"NO END OF LINES MUHAHAHA"
+
+d:	.asciz		"\r\nWHutatatawtawe \r\n \n \r \r \r \n \n \r gu \n"
+
+
+int_table:
+

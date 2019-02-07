@@ -1,0 +1,123 @@
+//Scott Saunders
+//	10163541
+//	March 30,	2016.
+
+
+//	Makes and manages the reading of .ppm
+
+.section	.text
+
+//Note: this version is hard-coded for 32bpi
+
+draw_img:
+	//Takes (x,y) (for the top-left corner), and the address of the picture to draw.
+	//Address is assumed to be the start of a .ppm image created by gimp (It has a comment in the header)
+	push	{r3-r11,lr}
+	xpos	.req	r5
+	ypos	.req	r6
+	picaddr	.req	r7
+	picw	.req	r8
+	pich	.req	r9
+	picx	.req	r10
+	picy	.req	r11
+
+	mov		xpos,	r0
+	mov		ypos,	r1
+	
+
+	//This program assumes it is of type p6, and a single line comment before the width and height.
+
+
+
+//	////////////////////////////Inital parsing of the image
+//
+//	mov		r0,		picaddr
+//	
+//	mov		r1,		#ASCII_NEWLINE				//Defined in Strings.s
+//	bl	find_next_char
+//	add		r0,		#1							//Add 1 so it doesn't point to the char we're looking for.
+//	mov		r1,		#ASCII_NEWLINE				//Defined in Strings.s
+//	bl	find_next_char
+//
+//	add		r0,		#1							//Add 1 so it doesn't crash atoi
+//	
+//	mov		picaddr,	r0						//This should point to the width
+//
+//	mov		r1,		#ASCII_SPACE	
+//	bl	find_next_char
+//	
+//	sub		r1,		picaddr,	r0					//Gets the length of the string of width
+//	mov		picaddr,	r0					//Copy the address to a safe space
+//	
+//	bl		atoi							//Gets the width value
+//	mov		picw,	r0
+//
+//	add		picaddr,	picaddr,	#1				//Skip the space
+//	mov		r0,		picaddr
+//	mov		r1,		#ASCII_NEWLINE			
+//	bl	find_next_char
+//	
+//	sub		r1,	picaddr,	r0
+//	add		picaddr,	r0,	#1
+//	
+//	bl		atoi
+//	mov		pich,	r0
+//
+//	mov		r0,	picaddr
+//	mov		r1,		#ASCII_NEWLINE				//the 255	value
+//	add		picaddr,	r0,			#1			//Now it points to the beginning of the data.
+//	
+//	mov		picx,	#32
+//	mov		picy,	#24
+
+	////////////////////////////Reads the image-data and draws it to screen.
+//	RED_MASK	=	0x00ff0000
+//	BLUE_MASK	=	0x000000ff
+//	GREEN_MASK	=	0xff000000		//This was assuming it was the same format has hexdump, it wasn't.
+//	ALPHA_MASK	=	0x0000ff00
+
+draw_img_loop:
+	ldr	r0,		[picaddr]
+	
+	//r0 will be data,	r3 will be the abgr data that the RBpi framebuffer uses
+	
+/*		
+	ldr		r1,	=RED_MASK			//I thought the pixel order was odd... but after seeing it in memory it is actually the right order!
+	and		r1,	r0
+	lsr		r3,	r1,	#4
+
+	ldr		r1,	=BLUE_MASK
+	and		r1,	r0
+	lsl		r1,	r1,	#4
+	orr		r3,	r1
+
+	ldr		r1,	=GREEN_MASK
+	and		r1,	r0
+	lsr		r1,	r1,	#2
+	orr		r3,	r1
+
+	ldr		r1,	=ALPHA_MASK
+	and		r1,	r0
+	lsl		r1,	r1,	#2
+	orr		r3,	r1
+
+*/
+//	setpixle
+	//TODO:		Set the pixles, within the boreders required.
+	
+	mov		r2,		r0
+	add		r0,		xpos,	picx
+	add		r1,		ypos,	picy
+	bl	fb_setpixle
+
+
+
+	pop		{r3-r11,lr}
+.section	.text
+	
+	
+	
+
+
+
+

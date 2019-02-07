@@ -1,0 +1,45 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov    	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+
+
+gpio_setup_quick	#16,	#1
+
+block_timer_q	10000
+
+ldr	r4, =0x20200028
+mov	r5,	#1
+lsl	r5,	#16
+//ldr	r5,	=0xffffffff			//SHOULD TURN IT ON. WTF
+str	r5, [r4]
+
+//Check that there is 001 {0,1}^{18} at $r0
+//gpio_set_low_q		#16
+//brk:	
+//	b	brk
+
+haltLoop$:
+	strprint "Hi \r",4
+	gpio_set_hi_q	#16
+	ldr		r0,		=1000000
+	bl	block_timer
+//	block_timer_q	1000000
+	strprint "Low\r",4
+	gpio_set_low_q	#16
+	block_timer_q	1000000
+	b	haltLoop$
+
+.section .data  
+.ltorg

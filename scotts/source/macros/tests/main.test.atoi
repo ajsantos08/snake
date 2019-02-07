@@ -1,0 +1,40 @@
+//Scott Saunders	10163541
+
+//Used to test ATOI with the help of gdb
+//look at $r0 in gdb at l
+//(brk to debuge readLine)
+
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+
+
+// INCLUDES MY MACROS
+.include "./macros/include.s"
+
+.section .text
+main:
+   	mov    	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+	
+	readLine 
+brk:
+	nop
+	mov	r1, r0
+	ldr	r0,	=buff
+	bl	atoi
+	nop
+	nop	
+l:	
+	nop
+	b main
+
+BUFFSIZE=32	
+	.byte	BUFFSIZE
+buff:
+	.rep	BUFFSIZE
+	.byte	0
+	.endr	

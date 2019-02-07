@@ -1,0 +1,84 @@
+//Scott	Saunders	10163541
+//Tests	memcopy
+
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+
+
+// INCLUDES MY MACROS
+.include "./macros/include.s"
+
+.section .text
+main:
+   	mov    	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+//	strprint	"Testing Memcopy.\n\r" , 17
+//	
+//	readLine 
+	
+	mov	r2, #32		//Test length for copying
+
+//	mov	r2,	#BUFFSIZE+1		//Test or buffer overflow error
+	ldr	r0,	=buff
+	ldr	r1,	=buff2
+	bl 	memcopy
+
+brk:	
+
+	nop
+	nop		//Going to load the buffer addr
+	ldr r0,	=buff
+	ldr	r1,	=buff2
+	nop
+	bl      WriteStringUART 
+	b main
+
+
+.align 4
+
+BUFFSIZE=32	
+	.byte	BUFFSIZE
+buff:
+	.byte	0
+	.byte	1
+	.byte	2
+	.byte	3
+	.byte	4
+	.byte	5
+	.byte	6
+	.byte	7
+	.byte	8
+	.byte	9
+	.byte	10
+	.byte	11
+	.byte	12
+	.byte	13
+	.byte	14
+	.byte	15
+	.byte	16
+	.byte	17
+	.byte	18
+	.byte	19
+	.byte	20
+	.byte	21
+	.byte	22
+	.byte	23
+	.byte	24
+	.byte	25
+	.byte	26
+	.byte	27
+	.byte	28
+	.byte	29
+	.byte	30
+	.byte	31
+
+	.byte	BUFFSIZE
+buff2:
+	.rep	BUFFSIZE
+	.byte	0
+	.endr

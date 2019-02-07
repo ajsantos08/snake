@@ -1,0 +1,344 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD build/CELLIMG_goodies.o
+LOAD build/IMG_startMenu.o
+LOAD build/interrupts.o
+LOAD build/CELLIMG_terrain.o
+LOAD build/irq.o
+LOAD build/DRIVER_SNES.o
+LOAD build/FIMG_gameOver.o
+LOAD build/DATA_coordinate.o
+LOAD build/FrameBufferPixel.o
+LOAD build/m_doubleldr.o
+LOAD build/IMG_Header.o
+LOAD build/sys_timer.o
+LOAD build/CELLIMG_snake.o
+LOAD build/main.o
+LOAD build/random.o
+LOAD build/include.o
+LOAD build/FIMG_mainMenu.o
+LOAD build/jtag.o
+LOAD build/CELLIMG_walls.o
+LOAD build/CELLIMG_headerNumbers.o
+LOAD uart.o
+LOAD gpio.o
+
+.init
+ *(.init)
+
+.data           0x00009080   0x7116e0
+ *(.data)
+ .data          0x00009080     0x1800 build/CELLIMG_goodies.o
+                0x00009080                bigBerry
+                0x00009880                Egg
+                0x0000a080                rareCandy
+ .data          0x0000a880    0xd8000 build/IMG_startMenu.o
+                0x0000a880                startMenuRestart
+                0x00076880                startMenuQuit
+ .data          0x000e2880        0x0 build/interrupts.o
+ .data          0x000e2880     0x1acc build/CELLIMG_terrain.o
+                0x000e2880                Boulder
+                0x000e3080                Floor
+                0x000e3880                Ladder
+ .data          0x000e434c        0x0 build/irq.o
+ .data          0x000e434c        0x0 build/DRIVER_SNES.o
+ .data          0x000e434c   0x300000 build/FIMG_gameOver.o
+                0x000e434c                gameOverWin
+                0x0026434c                gameOverLose
+ *fill*         0x003e434c        0x4 3f3f3f3f
+ .data          0x003e4350      0x120 build/DATA_coordinate.o
+                0x003e4350                blockX
+                0x003e43dc                blockY
+ .data          0x003e4470       0x30 build/FrameBufferPixel.o
+                0x003e4470                FrameBufferInfo
+                0x003e4498                FrameBufferPointer
+ .data          0x003e44a0        0x0 build/m_doubleldr.o
+ .data          0x003e44a0    0x20000 build/IMG_Header.o
+                0x003e44a0                Header
+ .data          0x004044a0       0x40 build/sys_timer.o
+ .data          0x004044e0     0x2800 build/CELLIMG_snake.o
+                0x004044e0                snakeBox
+                0x00404ce0                snakeHeadDown
+                0x004054e0                snakeHeadLeft
+                0x00405ce0                snakeHeadRight
+                0x004064e0                snakeHeadUp
+ .data          0x00406ce0      0x1f0 build/main.o
+                0x00406ce4                i_off1
+                0x00406ce8                i_off3
+                0x00406e90                int_table
+ .data          0x00406ed0       0x10 build/random.o
+ .data          0x00406ee0        0x0 build/include.o
+ .data          0x00406ee0   0x300000 build/FIMG_mainMenu.o
+                0x00406ee0                mainMenuStart
+                0x00586ee0                mainMenuEnd
+ .data          0x00706ee0        0x0 build/jtag.o
+ .data          0x00706ee0     0x4000 build/CELLIMG_walls.o
+                0x00706ee0                wallDown
+                0x007076e0                wallLeft
+                0x00707ee0                wallRight
+                0x007086e0                wallUp
+                0x00708ee0                cornerBottomLeft
+                0x007096e0                cornerBottomRight
+                0x00709ee0                cornerTopRight
+                0x0070a6e0                cornerTopLeft
+ .data          0x0070aee0     0xf880 build/CELLIMG_headerNumbers.o
+                0x0070aee0                numbersHeader
+                0x0070af5c                zeroHeader
+                0x0070b75c                oneHeader
+                0x0070bf5c                twoHeader
+                0x0070c75c                threeHeader
+                0x0070cf5c                fourHeader
+                0x0070d75c                fiveHeader
+                0x0070df5c                sixHeader
+                0x0070e75c                sevenHeader
+                0x0070ef5c                eightHeader
+                0x0070f75c                nineHeader
+                0x0070ff5c                tenHeader
+                0x0071075c                elevenHeader
+                0x00710f5c                twelveHeader
+                0x0071175c                thirteenHeader
+                0x00711f5c                fourteenHeader
+                0x0071275c                fifteenHeader
+                0x00712f5c                sixteenHeader
+                0x0071375c                seventeenHeader
+                0x00713f5c                eighteenHeader
+                0x0071475c                nineteenHeader
+                0x00714f5c                twentyHeader
+                0x0071575c                twentyOneHeader
+                0x00715f5c                twentyTwoHeader
+                0x0071675c                twentyThreeHeader
+                0x00716f5c                twentyFourHeader
+                0x0071775c                twentyFiveHeader
+                0x00717f5c                twentySixHeader
+                0x0071875c                twentySevenHeader
+                0x00718f5c                twentyEightHeader
+                0x0071975c                twentyNineHeader
+                0x00719f5c                thirtyHeader
+ .data          0x0071a760        0x0 uart.o
+ .data          0x0071a760        0x0 gpio.o
+ *.c.o(*)
+
+.igot.plt       0x0071a760        0x0
+ .igot.plt      0x00000000        0x0 build/interrupts.o
+
+.text           0x0071a760     0x1888
+ *.c.o(.text)
+ *(.text)
+ .text          0x0071a760        0x0 build/CELLIMG_goodies.o
+ .text          0x0071a760        0x0 build/IMG_startMenu.o
+ .text          0x0071a760       0xb8 build/interrupts.o
+                0x0071a760                enable_irq
+                0x0071a778                enable_a_irq
+                0x0071a794                disable_a_irq
+                0x0071a7a8                disable_irq
+                0x0071a7c0                setup_irq_handler
+                0x0071a7d4                InstallIntTable
+ .text          0x0071a818        0x0 build/CELLIMG_terrain.o
+ .text          0x0071a818       0x5c build/irq.o
+                0x0071a818                irq
+                0x0071a83c                irq_end
+                0x0071a848                irq_basic
+                0x0071a84c                irq_pend1
+                0x0071a868                irq_pend2
+ .text          0x0071a874      0x1b4 build/DRIVER_SNES.o
+                0x0071a874                init_GPIO
+                0x0071a950                wait
+                0x0071a96c                Read_SNES_raw
+ .text          0x0071aa28        0x0 build/FIMG_gameOver.o
+ .text          0x0071aa28        0x0 build/DATA_coordinate.o
+ .text          0x0071aa28      0x100 build/FrameBufferPixel.o
+                0x0071aa28                InitFrameBuffer
+                0x0071aa70                DrawPixel
+                0x0071aab8                MailboxWrite
+                0x0071aae8                MailboxRead
+ .text          0x0071ab28        0x0 build/m_doubleldr.o
+ .text          0x0071ab28        0x0 build/IMG_Header.o
+ *fill*         0x0071ab28        0x8 3f3f3f3f
+ .text          0x0071ab30      0x1a0 build/sys_timer.o
+                0x0071ab30                save_timer
+                0x0071ab80                restore_timer
+                0x0071abc0                sys_timer_irq
+                0x0071ac60                set_timer_1
+                0x0071ac8c                set_timer_3
+ .text          0x0071acd0        0x0 build/CELLIMG_snake.o
+ .text          0x0071acd0      0xf70 build/main.o
+                0x0071acd4                main
+                0x0071ad60                drawMap
+                0x0071af64                haltLoop$
+                0x0071b6f4                UpdateRare
+                0x0071b740                UpdateBerry
+ .text          0x0071bc40       0x90 build/random.o
+ .text          0x0071bcd0        0x0 build/include.o
+ .text          0x0071bcd0        0x0 build/FIMG_mainMenu.o
+ .text          0x0071bcd0       0x8c build/jtag.o
+                0x0071bcd0                EnableJTAG
+ .text          0x0071bd5c        0x0 build/CELLIMG_walls.o
+ .text          0x0071bd5c        0x0 build/CELLIMG_headerNumbers.o
+ .text          0x0071bd5c      0x1b4 uart.o
+                0x0071bd5c                InitUART
+                0x0071be1c                PutCharUART
+                0x0071be38                GetCharUART
+                0x0071be54                WriteStringUART
+                0x0071be80                ReadLineUART
+ .text          0x0071bf10       0xd8 gpio.o
+                0x0071bf10                GetGpioAddress
+                0x0071bf18                SetGpioFunction
+                0x0071bf64                SetGpio
+                0x0071bfa0                GetGpio
+OUTPUT(build/output.elf elf32-littlearm)
+
+.glue_7         0x0071bfe8        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x0071bfe8        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x0071bfe8        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x0071bfe8        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.iplt           0x0071bfe8        0x0
+ .iplt          0x00000000        0x0 build/interrupts.o
+
+.rel.dyn        0x0071bfe8        0x0
+ .rel.iplt      0x00000000        0x0 build/interrupts.o
+
+.bss            0x0071bfe8        0x0
+ .bss           0x0071bfe8        0x0 build/CELLIMG_goodies.o
+ .bss           0x0071bfe8        0x0 build/IMG_startMenu.o
+ .bss           0x0071bfe8        0x0 build/interrupts.o
+ .bss           0x0071bfe8        0x0 build/CELLIMG_terrain.o
+ .bss           0x0071bfe8        0x0 build/irq.o
+ .bss           0x0071bfe8        0x0 build/DRIVER_SNES.o
+ .bss           0x0071bfe8        0x0 build/FIMG_gameOver.o
+ .bss           0x0071bfe8        0x0 build/DATA_coordinate.o
+ .bss           0x0071bfe8        0x0 build/FrameBufferPixel.o
+ .bss           0x0071bfe8        0x0 build/m_doubleldr.o
+ .bss           0x0071bfe8        0x0 build/IMG_Header.o
+ .bss           0x0071bfe8        0x0 build/sys_timer.o
+ .bss           0x0071bfe8        0x0 build/CELLIMG_snake.o
+ .bss           0x0071bfe8        0x0 build/main.o
+ .bss           0x0071bfe8        0x0 build/random.o
+ .bss           0x0071bfe8        0x0 build/include.o
+ .bss           0x0071bfe8        0x0 build/FIMG_mainMenu.o
+ .bss           0x0071bfe8        0x0 build/jtag.o
+ .bss           0x0071bfe8        0x0 build/CELLIMG_walls.o
+ .bss           0x0071bfe8        0x0 build/CELLIMG_headerNumbers.o
+ .bss           0x0071bfe8        0x0 uart.o
+ .bss           0x0071bfe8        0x0 gpio.o
+
+.ARM.attributes
+                0x00000000       0x26
+ .ARM.attributes
+                0x00000000       0x26 build/CELLIMG_goodies.o
+ .ARM.attributes
+                0x00000026       0x26 build/IMG_startMenu.o
+ .ARM.attributes
+                0x0000004c       0x26 build/interrupts.o
+ .ARM.attributes
+                0x00000072       0x26 build/CELLIMG_terrain.o
+ .ARM.attributes
+                0x00000098       0x26 build/irq.o
+ .ARM.attributes
+                0x000000be       0x26 build/DRIVER_SNES.o
+ .ARM.attributes
+                0x000000e4       0x26 build/FIMG_gameOver.o
+ .ARM.attributes
+                0x0000010a       0x26 build/DATA_coordinate.o
+ .ARM.attributes
+                0x00000130       0x26 build/FrameBufferPixel.o
+ .ARM.attributes
+                0x00000156       0x26 build/m_doubleldr.o
+ .ARM.attributes
+                0x0000017c       0x26 build/IMG_Header.o
+ .ARM.attributes
+                0x000001a2       0x26 build/sys_timer.o
+ .ARM.attributes
+                0x000001c8       0x26 build/CELLIMG_snake.o
+ .ARM.attributes
+                0x000001ee       0x26 build/main.o
+ .ARM.attributes
+                0x00000214       0x26 build/random.o
+ .ARM.attributes
+                0x0000023a       0x26 build/include.o
+ .ARM.attributes
+                0x00000260       0x26 build/FIMG_mainMenu.o
+ .ARM.attributes
+                0x00000286       0x26 build/jtag.o
+ .ARM.attributes
+                0x000002ac       0x26 build/CELLIMG_walls.o
+ .ARM.attributes
+                0x000002d2       0x26 build/CELLIMG_headerNumbers.o
+ .ARM.attributes
+                0x000002f8       0x26 uart.o
+ .ARM.attributes
+                0x0000031e       0x26 gpio.o
+
+.debug_line     0x00000000      0x91a
+ .debug_line    0x00000000       0x77 build/interrupts.o
+ .debug_line    0x00000077       0x56 build/irq.o
+ .debug_line    0x000000cd       0xb5 build/DRIVER_SNES.o
+ .debug_line    0x00000182       0x96 build/FrameBufferPixel.o
+ .debug_line    0x00000218       0x9a build/sys_timer.o
+ .debug_line    0x000002b2      0x477 build/main.o
+ .debug_line    0x00000729       0x61 build/random.o
+ .debug_line    0x0000078a       0x61 build/jtag.o
+ .debug_line    0x000007eb       0xb6 uart.o
+ .debug_line    0x000008a1       0x79 gpio.o
+
+.debug_info     0x00000000      0x3c1
+ .debug_info    0x00000000       0x62 build/interrupts.o
+ .debug_info    0x00000062       0x5b build/irq.o
+ .debug_info    0x000000bd       0x63 build/DRIVER_SNES.o
+ .debug_info    0x00000120       0x68 build/FrameBufferPixel.o
+ .debug_info    0x00000188       0x61 build/sys_timer.o
+ .debug_info    0x000001e9       0x58 build/main.o
+ .debug_info    0x00000241       0x5e build/random.o
+ .debug_info    0x0000029f       0x5c build/jtag.o
+ .debug_info    0x000002fb       0x63 uart.o
+ .debug_info    0x0000035e       0x63 gpio.o
+
+.debug_abbrev   0x00000000       0xc6
+ .debug_abbrev  0x00000000       0x14 build/interrupts.o
+ .debug_abbrev  0x00000014       0x14 build/irq.o
+ .debug_abbrev  0x00000028       0x14 build/DRIVER_SNES.o
+ .debug_abbrev  0x0000003c       0x14 build/FrameBufferPixel.o
+ .debug_abbrev  0x00000050       0x14 build/sys_timer.o
+ .debug_abbrev  0x00000064       0x12 build/main.o
+ .debug_abbrev  0x00000076       0x14 build/random.o
+ .debug_abbrev  0x0000008a       0x14 build/jtag.o
+ .debug_abbrev  0x0000009e       0x14 uart.o
+ .debug_abbrev  0x000000b2       0x14 gpio.o
+
+.debug_aranges  0x00000000      0x148
+ .debug_aranges
+                0x00000000       0x20 build/interrupts.o
+ .debug_aranges
+                0x00000020       0x20 build/irq.o
+ .debug_aranges
+                0x00000040       0x20 build/DRIVER_SNES.o
+ .debug_aranges
+                0x00000060       0x20 build/FrameBufferPixel.o
+ .debug_aranges
+                0x00000080       0x20 build/sys_timer.o
+ .debug_aranges
+                0x000000a0       0x28 build/main.o
+ .debug_aranges
+                0x000000c8       0x20 build/random.o
+ .debug_aranges
+                0x000000e8       0x20 build/jtag.o
+ .debug_aranges
+                0x00000108       0x20 uart.o
+ .debug_aranges
+                0x00000128       0x20 gpio.o
+
+.debug_ranges   0x00000000       0x20
+ .debug_ranges  0x00000000       0x20 build/main.o

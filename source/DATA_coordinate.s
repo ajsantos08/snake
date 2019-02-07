@@ -1,0 +1,77 @@
+.section .data
+.align 4
+.globl blockX
+blockX:
+	.int 	5
+	.int 	6
+	.int 	7
+	.int 	8
+	.int 	27
+	.int 	27
+	.int 	3
+	.int 	27
+	.int 	27
+	.int 	19
+	.int 	27
+	.int 	19
+	.int 	27
+	.int 	3
+	.int 	19
+	.int 	19
+	.int	15
+	.int	16
+	.int	17
+	.int	18
+	.int	19
+	.int	20
+	.int	21
+	.int	22
+	.int	23
+	.int 	3
+	.int 	9
+	.int 	15
+	.int 	27
+	.int 	27
+	.int 	3
+	.int 	27
+	.int 	27
+	.int 	27
+	.int 	27
+.globl blockY
+blockY:
+	.int	5
+	.int	5
+	.int	5
+	.int	5
+	.int	5
+	.int	6
+	.int	7
+	.int	7
+	.int	8
+	.int	9
+	.int	9
+	.int	10
+	.int	10
+	.int	11
+	.int	11
+	.int	12
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	13
+	.int	15
+	.int	17
+	.int	17
+	.int	17
+	.int	18
+	.int	19
+	.int	19
+	.int	20
+	.int	21
+	.int	22
+

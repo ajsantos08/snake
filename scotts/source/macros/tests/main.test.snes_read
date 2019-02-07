@@ -1,0 +1,28 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+bl	snes_init
+read:
+	bl	snes_read
+	cmp	r0,	#0
+	bne	read
+
+strprint	"WORKED\n\r",8
+
+haltLoop$:
+	b	haltLoop$
+
+.section .data  
+

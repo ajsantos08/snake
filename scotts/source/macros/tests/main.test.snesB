@@ -1,0 +1,54 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART	
+
+	mov		r1,	#10
+	bl	snes_init
+	nop
+
+/*	
+	mov		r0,	#9
+	mov		r1,	#1
+	bl	gpio_setup
+	nop
+
+	mov		r0,#11
+	mov		r1,	#1
+	bl gpio_setup
+	nop
+*/
+
+READ:
+	nop
+	nop
+	mov		r0,	#0
+	bl	snes_read
+brk:
+	nop
+	nop
+    cmp r0, #0
+    beq	READ
+
+DONE:
+
+    strprint    "B WAS PRESSED\n\r", 14
+
+b	READ
+
+
+haltLoop$:
+	b	haltLoop$
+
+.section .data  
+

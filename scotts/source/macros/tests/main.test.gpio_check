@@ -1,0 +1,73 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+//Setup pins so they are connected to eachother
+	OUTPUT	= 10
+	INPUT	= 9
+
+	gpio_setup_quick	#OUTPUT,	#1
+	gpio_setup_quick	#INPUT,		#0
+
+
+	gpio_set_hi_q	#16
+
+Loop:
+	nop
+	nop
+	gpio_set_hi_q		#OUTPUT
+	nop
+	block_timer_q		1000000
+	nop
+	bl	set_led
+	nop
+
+	gpio_set_low_q		#OUTPUT
+	nop
+	block_timer_q		1000000
+	nop	
+	bl	set_led
+	nop
+
+	b	Loop
+	
+
+
+set_led:
+	mov	r0,		#INPUT
+	push	{lr}
+	bl	gpio_read_pin
+	pop	{lr}
+	nop
+	cmp	r0,	#0
+	beq	set_eq
+	
+	gpio_set_hi_q	#16
+	nop
+	b	set_end
+
+set_eq:
+    gpio_set_low_q   #16
+	nop
+	b	set_end
+
+
+set_end:
+	nop
+	nop	
+	bx	lr
+
+
+.section .data  
+

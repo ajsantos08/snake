@@ -1,0 +1,186 @@
+//Scott Saunders
+// 	10163541
+//	March 23.	2015
+
+
+//TODO: Initalize.
+
+fb_initalize:
+	push	{r0-r5,lr}
+	ldr	r1,	=0x80000000  //MSB
+
+fb_initalize_c1:
+	d_ldr	r0, 0x2000B898	//Loads the mailbox status
+	tst r0, r1			//ANDS
+	//Assuming it compairs it to zero, then :
+	bne	fb_initalize	//Jump back to initalize if cannot write.
+
+	
+	nop //Only runs if can write:
+	ldr r0,	framebuffer_info
+//	ldr	r1,	=0x40000000		//Value to set so it quickly inits (No caching)
+//	orr 	r0,	r1
+	orr		r0,	#0x40000000
+	orr	r0,	#0x1			//Set it's channel to 1.
+	ldr	r1,	=0x2000B880
+	str	r0,	[r1, #0x20]
+
+fb_initalize_c2:
+//	block_wait_q 0x200000
+//    d_ldr   r0, 0x2000B898  //Loads the mailbox status
+//	ldr r1, 0x40000000  //MSB-1
+//	tst	r0,	r1			//ANDS
+//	bne	fb_inialize_check
+
+//Following tutorial example: Load the address in FBinfo and see if it is non-zero
+
+	d_ldr	r0	fbuff_adr	//Load value
+	tst		r0,	#0			//Check if zero
+	beq		fb_initalize_c2
+
+
+	pop		{r0-r5,lr}
+	bx lr
+	
+	b halt
+	b halt
+	b halt
+
+//	Bounds checker: (X,Y)
+//Checks it is in bounds of framebuffer (x,y)
+//Returns 1 if in range
+fb_boundck:
+
+	push	{r2-r4,lr}
+
+	mov		r3,	r0					//Copy the X to r3
+	mov		r0,	#1					//Set the output to return true
+
+	d_ldr		r4,	fbuff_wid		//Loads the fbuff_width into r3.
+	cmp			r3,	r4
+	movge		r0,	#0				//Set output false if Addr is out of range on X
+	
+	d_ldr		r4,	fbuff_hig		//Loads the fbuff_height
+	cmp			r1,	r4		
+	movge		r0,	#0				//Set output false
+
+	pop		{r2-r4,lr}
+	bx		lr
+
+
+.macro fb_getpixleaddr	x,	y:req, tmp:req
+ //Calculates the pixel address (No bounds checking)
+	d_ldr	\tmp,	fbuff_wid			//Loads the value in fbuff_wid
+	mul		\y,		\tmp
+	d_ldr		\tmp,	fbuff_adr		//Loads the value in fbuff_adr
+	add		\x,		\y
+	add		\x,		\tmp			
+
+.endm
+
+//TODO: Set_Pixel(X,Y,color)
+fb_setpixle:  	//Sets the pixle given X & Y cowards, the color mask to set
+		//Works based off the framebuffer_info to get the correct vals.
+		//Returns -1 for out of bounds.
+	x	.req	r3
+	y	.req	r0
+	color	.req	r2
+	push	{r3-r5,lr}
+	push	{r2}
+	push	{x}
+	
+	bl fb_boundck						//Check bounds
+	cmp	r0,	#0							
+	moveq	r0,	#-1							//Set return value to -1, "Out of bounds"
+	beq	fb_setpixle_end					//Skip setting pixle if out of bounds... and exit
+
+	pop		{x}
+	mov		x,	r3						//Copy X back from r3
+	
+	fb_getpixleaddr		x,	y,	r4		//Address X,Y using r4 for scratch
+	.unreq		x
+	.unreq		y
+	addr	.req	r0
+	
+	bic		r1,	r0,	#31					//Gets the base address to load the values from.
+	ldr		r2,	[r1]					//Loads the bytes here.
+
+	d_ldr	r4,	fbuff_dep				//Loads the framebuffer depth.
+									//The number of bits per pixle. (need to clear that many bits.)
+	bitmask_gen_q	r4				//Generate a bitmask of length of a pixle.
+	
+	//At this point: r0 = bitmask of length of pixel depth, r1 = base address, r2 = base values, r3 = x, r4 = fbdepth
+	
+	sub	r3,	r1,	r3					//Get the offset from the left for the bitmask.
+	rsb	r3,	#32						//Get it from the right
+	
+	lsl		r0,	r3					//Shift the bitmask to place
+	bic		r2,	r0
+	pop		{r3}					//Pops the color value back.
+	lsl		r3,	r0					//Shift the color into place.
+	orr		r2,	r3					
+	str		r2,	[r1]				//Store the changed pixle back into the framebuffer.
+
+
+
+fb_setpixle_end:
+	pop		{r3-r5,lr}
+	.unreq		color
+	bx	lr
+
+//TODO: Copy_Img(<pointer>)
+//TODO: Copy_Img_q(label)
+
+//TODO: DrawLine((x,y),(x,y),word:color) //Uses a slope
+//			x0=r0
+	initx	.req	r0
+	inity	.req	r1
+	endx	.req	r2
+	endy	.req	r4
+	colour	.req	r5
+//			y0=r1
+//			x1=r2
+//			x2=r3
+//			color = r4
+
+fb_drawline:
+	push	{r5-r8,lr}
+		
+//	cmp	x,	y
+		//TODO: Calc X and Y Slopes
+		
+	
+fb_drawline_loop:
+
+		//TODO: Cal
+
+fb_drawline_end:
+	pop		{r5-r8,lr}
+	bx	lr
+
+//TODO: Drawrectangle
+
+.data
+.align	4
+framebuffer_info:
+//Width:  /0x00
+fbuff_wid:	.word			1024
+//Height: /0x04
+fbuff_hig:	.word			768
+//V_width: //0x08 
+fbuff_vwd:	.word			1024
+//V_Height: /0x0c
+fbuff_vhi:	.word			768
+//Pitch: (setup by gpu) /0x10
+fbuff_pit:	.word
+//Depth:	(Bits per pixle) \0x14
+fbuff_dep:	.word			16
+//X Offset	\0x18
+fbuff_xof:	.word
+//Y Offset  \0x1c
+fbuff_yof:	.word
+//Pointer to framebuff, set by gpu   \0x20
+fbuff_adr:	.word
+//Size			\0x24
+fbuff_siz:	.word
+

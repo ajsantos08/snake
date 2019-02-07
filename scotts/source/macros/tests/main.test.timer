@@ -1,0 +1,28 @@
+.section    .init
+.globl     _start
+
+_start:
+    b       main
+    
+.section .text
+
+.include "./macros/include.s"
+
+main:
+   	mov     	sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG // Enable JTAG
+	bl		InitUART    // Initialize the UART
+
+
+
+gpio_setup_quick	#16,	#1
+
+
+haltLoop$:
+	strprint	"Athing\n",7
+	ldr		r0,		=1000000
+	bl block_timer
+	b	haltLoop$
+
+.section .data  
+
